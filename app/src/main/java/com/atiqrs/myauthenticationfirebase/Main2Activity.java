@@ -39,9 +39,11 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.SignUponSignupPage:
                 getRegistration();
              break;
+
              case R.id.SignInonSignupPage:
                  startActivity(new Intent(Main2Activity.this,MainActivity.class));
              break;
