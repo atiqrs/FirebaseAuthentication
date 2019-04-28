@@ -1,15 +1,15 @@
 # FirebaseAuthentication
 
-#basic ui
+## Basic 
 
-## Signup page
-    * first name
-    * last name
-    * email (with validity)
-    * password (up to 6 digit)
-    * signin(Button)
+* Signup page
+   * first name
+   * last name
+   * email (with validity)
+   * password (up to 6 digit)
+   * signin(Button)
     
-## Signin page
+* Signin page
    * username/email
    * password
    * signup(Button)
