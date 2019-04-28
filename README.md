@@ -1,6 +1,6 @@
 # FirebaseAuthentication
 
-## Basic 
+## Basic UI 
 
 * Signup page
    * first name
