@@ -17,12 +17,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
 
     EditText firstName,lastName,email,password;
     Button SignUponSignupPage,SignINonSignupPage;
     ProgressBar progressBar;
+    private long backPressedTime;
     //public FirebaseAuth mAuth;
 
     @Override
@@ -103,19 +105,47 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         FirebaseApp.initializeApp(Main2Activity.this);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(rEmail,rPassword)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Toast.makeText(Main2Activity.this, "Sign Up Succesfull", Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(getApplicationContext(),Home.class));
                         } else {
-                            Toast.makeText(Main2Activity.this, "Wrong! Sign Up Unsuccesfull", Toast.LENGTH_SHORT).show();
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException){
+                                Toast.makeText(Main2Activity.this, "User is already registared", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Main2Activity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
         return;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            exitMe();
+            return;
+        } else
+            Toast.makeText(getApplicationContext(), "Press Again to exit", Toast.LENGTH_SHORT).show();
+        backPressedTime = System.currentTimeMillis();
+
+
+    }
+
+    private void exitMe() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Exit me", true);
+        startActivity(intent);
+        finish();
     }
 }
