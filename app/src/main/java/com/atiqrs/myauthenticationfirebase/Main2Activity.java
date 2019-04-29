@@ -1,26 +1,38 @@
 package com.atiqrs.myauthenticationfirebase;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
 
     EditText firstName,lastName,email,password;
     Button SignUponSignupPage,SignINonSignupPage;
+    ProgressBar progressBar;
+    //public FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         this.setTitle("Sign Up");
+
         init();
+
 
         SignINonSignupPage.setOnClickListener(this);
         SignUponSignupPage.setOnClickListener(this);
@@ -34,6 +46,8 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         password = findViewById(R.id.password);
         SignINonSignupPage = findViewById(R.id.SignInonSignupPage);
         SignUponSignupPage = findViewById(R.id.SignUponSignupPage);
+
+        progressBar = findViewById(R.id.progressbarId);
     }
 
     @Override
@@ -42,6 +56,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
             case R.id.SignUponSignupPage:
                 getRegistration();
+
              break;
 
              case R.id.SignInonSignupPage:
@@ -87,5 +102,20 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             password.requestFocus();
             return;
         }
+
+        FirebaseApp.initializeApp(Main2Activity.this);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(rEmail,rPassword)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(Main2Activity.this, "Sign Up Succesfull", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Main2Activity.this, "Wrong! Sign Up Unsuccesfull", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        return;
     }
 }
